@@ -1,0 +1,16 @@
+{
+  // Node runs the .ts files directly by stripping types, and never reads this
+  // file. It's here so editors and `tsc` agree with Node: relative imports keep
+  // their .ts extension, and syntax Node can't strip (enum, namespace,
+  // parameter properties) is an error.
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "types": ["node"]
+  }
+}
