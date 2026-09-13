@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      # npm ci installs exactly what package-lock.json pins, the way foro.sh
+      # deploys, and fails if it has drifted from package.json.
+      - run: npm ci
+      - run: npm test
+
+  skills:
+    name: Skills match foro-sh/foro
+    # Only in the template itself. In a repo created from it the skills belong
+    # to its owner, who is free to edit them.
+    if: github.repository == 'foro-sh/mcp-starter-node'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Compare with the canonical skills
+        run: |
+          git clone --quiet --depth 1 https://github.com/foro-sh/foro.git "$RUNNER_TEMP/foro"
+          status=0
+          for skill in design-mcp-tools wrap-an-http-api deploy-to-foro; do
+            if ! diff -r "$RUNNER_TEMP/foro/plugins/claude-code/skills/$skill" ".claude/skills/$skill"; then
+              echo "::error file=.claude/skills/$skill/SKILL.md::$skill differs from foro-sh/foro. Copy plugins/claude-code/skills/$skill from its main branch."
+              status=1
+            fi
+          done
+          exit $status
