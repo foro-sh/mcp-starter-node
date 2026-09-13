@@ -113,3 +113,4 @@ is what the platform does.
 
 The dashboard shows the deploy succeeded and `https://<slug>.foro.sh` serves a
 real MCP response. Report the actual slug URL, not a predicted one.
+local edit
