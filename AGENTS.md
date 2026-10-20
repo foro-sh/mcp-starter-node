@@ -27,7 +27,7 @@ to foro.sh. README.md covers the layout.
   and transport per request. Keep all three.
 - Read secrets from `process.env`. Locally they come from `.env`; deployed, from
   the Secrets tab in the foro.sh dashboard. Never commit one.
-- `.foro/` is scratch space, such as API specs fetched to query with `jq`. It is
+- `.foro/` is scratch space, such as API specs fetched to query with `node -e`. It is
   gitignored.
 
 ## Skills
